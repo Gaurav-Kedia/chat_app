@@ -20,7 +20,7 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
                 GroupsFragment GroupsFragments = new GroupsFragment();
                 return GroupsFragments;
             case 2:
-                ContantsFragment contactsfragments = new ContantsFragment();
+                ContactsFragment contactsfragments = new ContactsFragment();
                 return contactsfragments;
             default:
                 return null;
