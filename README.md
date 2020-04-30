@@ -1,4 +1,4 @@
-# AppName: Meair Chat
+# Meair Chat
 Meair chat is a android based instant messaging service for smartphone that uses internet for communication.
 In addition to text messaging, users can also send graphical emoticons, images, videos, files like PDF, DOCX file.
 
