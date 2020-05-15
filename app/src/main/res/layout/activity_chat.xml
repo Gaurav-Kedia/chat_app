@@ -25,6 +25,14 @@
         android:background="@android:color/background_light"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:elevation="3dp"
+            android:backgroundTint="#fff"
+            android:id="@+id/send_files"
+            android:src="@drawable/send_files"
+            android:layout_height="match_parent"/>
         <EditText
             android:layout_width="0dp"
             android:layout_weight="7"
@@ -35,6 +43,8 @@
         <ImageButton
             android:layout_width="0dp"
             android:layout_weight="1.5"
+            android:elevation="3dp"
+            android:backgroundTint="#fff"
             android:id="@+id/send_message_btn"
             android:src="@drawable/send_message"
             android:layout_height="match_parent"/>

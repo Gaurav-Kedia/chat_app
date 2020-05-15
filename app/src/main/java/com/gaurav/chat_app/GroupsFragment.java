@@ -2,6 +2,7 @@ package com.gaurav.chat_app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -32,6 +35,8 @@ public class GroupsFragment extends Fragment {
     private ArrayAdapter<String> arrayAdapter;
     private ArrayList<String> list_of_groups = new ArrayList<>();
     private DatabaseReference GroupRef;
+    private FirebaseAuth mAuth;
+    private String currentuserid;
 
     public GroupsFragment() {
         // Required empty public constructor
@@ -42,6 +47,8 @@ public class GroupsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        mAuth = FirebaseAuth.getInstance();
+        currentuserid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         groupFragmentView = inflater.inflate(R.layout.fragment_groups, container, false);
         GroupRef = FirebaseDatabase.getInstance().getReference().child("Group");
         initialisefields();
@@ -62,14 +69,40 @@ public class GroupsFragment extends Fragment {
         GroupRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Set<String> set = new HashSet<String>();
+                final Set<String> set = new HashSet<String>();
                 Iterator iterator = dataSnapshot.getChildren().iterator();
                 while(iterator.hasNext()){
-                    set.add(((DataSnapshot)iterator.next()).getKey());
+                    final String grpname = Objects.requireNonNull(((DataSnapshot) iterator.next()).getKey());
+                    GroupRef.child(grpname).child("participants")
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                            String id = snap.getKey();
+                                            assert id != null;
+                                            if (id.equalsIgnoreCase(currentuserid)) {
+                                                set.add(grpname);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                 }
-                list_of_groups.clear();
-                list_of_groups.addAll(set);
-                arrayAdapter.notifyDataSetChanged();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        list_of_groups.clear();
+                        list_of_groups.addAll(set);
+                        arrayAdapter.notifyDataSetChanged();
+                    }
+                }, 3000);
             }
 
             @Override
@@ -80,7 +113,7 @@ public class GroupsFragment extends Fragment {
     }
 
     private void initialisefields() {
-        list_view = (ListView) groupFragmentView.findViewById(R.id.list_view);
+        list_view = groupFragmentView.findViewById(R.id.list_view);
         arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, list_of_groups);
         list_view.setAdapter(arrayAdapter);
     }

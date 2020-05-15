@@ -1,12 +1,11 @@
 package com.gaurav.chat_app;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Display;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -47,7 +46,7 @@ public class GroupChatActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentuserid= mAuth.getCurrentUser().getUid();
         usersref = FirebaseDatabase.getInstance().getReference().child("Users");
-        groupnameref = FirebaseDatabase.getInstance().getReference().child("Group").child(currentgroupname);
+        groupnameref = FirebaseDatabase.getInstance().getReference().child("Group").child(currentgroupname).child("messages");
 
         InitialiseFields();
         GetUserInfo();
@@ -155,13 +154,13 @@ public class GroupChatActivity extends AppCompatActivity {
     }
 
     private void InitialiseFields() {
-        mtoolbar = (Toolbar) findViewById(R.id.group_chat_bar_layout);
+        mtoolbar = findViewById(R.id.group_chat_bar_layout);
         setSupportActionBar(mtoolbar);
         getSupportActionBar().setTitle(currentgroupname);
 
-        sendMessageButton = (ImageButton) findViewById(R.id.send_message_button);
-        userMessageInput = (EditText) findViewById(R.id.input_group_message);
-        mScrollView = (ScrollView) findViewById(R.id.my_scroll_view);
-        displayTextMessages = (TextView) findViewById(R.id.group_chat_text_display);
+        sendMessageButton = findViewById(R.id.send_message_button);
+        userMessageInput = findViewById(R.id.input_group_message);
+        mScrollView = findViewById(R.id.my_scroll_view);
+        displayTextMessages = findViewById(R.id.group_chat_text_display);
     }
 }

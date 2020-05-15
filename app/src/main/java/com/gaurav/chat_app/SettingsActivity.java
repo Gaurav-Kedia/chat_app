@@ -63,6 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
                 UpdateSettings();
             }
         });
+
         RetriveUserInfo();
 
         userprofileimage.setOnClickListener(new View.OnClickListener() {

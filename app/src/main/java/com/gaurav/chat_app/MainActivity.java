@@ -2,12 +2,12 @@ package com.gaurav.chat_app;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -15,8 +15,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,22 +44,21 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mtoolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
+        mtoolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mtoolbar);
         getSupportActionBar().setTitle("chat app");
         rootref = FirebaseDatabase.getInstance().getReference();
 
-        myViewPager = (ViewPager) findViewById(R.id.main_tabs_pager);
+        myViewPager = findViewById(R.id.main_tabs_pager);
         myTabsAccessorAdapter = new TabsAccessorAdapter(getSupportFragmentManager());
         myViewPager.setAdapter(myTabsAccessorAdapter);
 
-        myTabLayout = (TabLayout) findViewById(R.id.main_tabs);
+        myTabLayout = findViewById(R.id.main_tabs);
         myTabLayout.setupWithViewPager(myViewPager);
     }
 
     @Override
     protected void onStart() {
-        super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser == null){
             SendUserToLoginActivity();
@@ -70,24 +67,25 @@ public class MainActivity extends AppCompatActivity {
             updateuserstatus("online");
             verifyuserexistance();
         }
+        super.onStart();
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             updateuserstatus("offline");
         }
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             updateuserstatus("offline");
         }
+        super.onDestroy();
     }
 
     private void verifyuserexistance() {
@@ -188,13 +186,10 @@ public class MainActivity extends AppCompatActivity {
                 }
         });
         builder.show();
-
-
-
     }
 
     private void CreateNewGroup(final String groupname) {
-        rootref.child("Group").child(groupname).setValue("")
+        /*rootref.child("Group").child(groupname).setValue("")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -202,7 +197,14 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, groupname + "is created.", Toast.LENGTH_SHORT).show();
                         }
                     }
-                });
+                });*/
+        addparticipatens(groupname);
+    }
+
+    private void addparticipatens(String groupname) {
+        Intent addparticipants = new Intent(MainActivity.this, Add_paticipants.class);
+        addparticipants.putExtra("groupname", groupname);
+        startActivity(addparticipants);
     }
 
     private void SendUserToLoginActivity() {

@@ -29,6 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * A simple {@link Fragment} subclass.
  */
 public class ChatsFragment extends Fragment {
+
     private View privatechatview;
     private RecyclerView chatList;
     private DatabaseReference chatsref, usersref;
@@ -36,10 +37,7 @@ public class ChatsFragment extends Fragment {
     private String currentuserid;
     private ProgressDialog loadingbar;
 
-    public ChatsFragment() {
-        // Required empty public constructor
-    }
-
+    public ChatsFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
