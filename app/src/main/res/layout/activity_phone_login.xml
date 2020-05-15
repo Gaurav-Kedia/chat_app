@@ -15,7 +15,7 @@
         android:layout_marginTop="180dp"
         android:padding="8dp"
         android:inputType="phone"
-        android:hint="wite phone number"
+        android:hint="write phone number"
         android:textAllCaps="false"
         android:drawableStart="@drawable/phone"
         android:textSize="15sp"

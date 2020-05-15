@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser == null){
             SendUserToLoginActivity();
@@ -70,24 +69,25 @@ public class MainActivity extends AppCompatActivity {
             updateuserstatus("online");
             verifyuserexistance();
         }
+        super.onStart();
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             updateuserstatus("offline");
         }
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             updateuserstatus("offline");
         }
+        super.onDestroy();
     }
 
     private void verifyuserexistance() {

@@ -25,7 +25,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView userProfilename, userprofilestatus;
     private Button sendmessagerequestbutton, declinechatrequest;
     private FirebaseAuth mAuth;
-
     private DatabaseReference userref, contactref;
 
     @Override
@@ -35,7 +34,6 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         sender_user_id = mAuth.getCurrentUser().getUid();
         userref = FirebaseDatabase.getInstance().getReference().child("Users");
-        //chatrequestref = FirebaseDatabase.getInstance().getReference().child("Chat Requests");
         contactref = FirebaseDatabase.getInstance().getReference().child("Contacts");
 
         receiveruserid = getIntent().getExtras().get("visit_user_id").toString();
@@ -45,7 +43,6 @@ public class ProfileActivity extends AppCompatActivity {
         sendmessagerequestbutton = (Button) findViewById(R.id.send_message_request_button);
         declinechatrequest = (Button) findViewById(R.id.decline_message_request_button);
         Current_state = "new";
-
         Retrieveuserinfo();
     }
 
@@ -81,55 +78,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void managechatrequest() {
-        /*chatrequestref.child(sender_user_id)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.hasChild(receiveruserid)){
-                            String request_type = dataSnapshot.child(receiveruserid).child("request_type").getValue().toString();
-
-                            if(request_type.equals("sent")){
-                                Current_state = "request_sent";
-                                sendmessagerequestbutton.setText("Cancel Chat Request");
-                            }
-                            else if(request_type.equals("received")) {
-                                Current_state = "request_received";
-                                sendmessagerequestbutton.setText("Accept Chat Request");
-                                declinechatrequest.setVisibility(View.VISIBLE);
-                                declinechatrequest.setEnabled(true);
-
-                                declinechatrequest.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        //CancelChatRequest();
-                                    }
-                                });
-                            }
-                        }
-                        else {
-                            contactref.child(sender_user_id)
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            if(dataSnapshot.hasChild(receiveruserid)){
-                                                Current_state = "friends";
-                                                sendmessagerequestbutton.setText("Remove");
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });*/ //chatrequestref
         contactref.child(sender_user_id).child(receiveruserid).child("Contacts")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -156,12 +104,6 @@ public class ProfileActivity extends AppCompatActivity {
                         //sendchatrequest();
                         AddToContact();
                     }
-                    /*if(Current_state.equals("request_sent")){
-                        CancelChatRequest();
-                    }*/
-                    /*if(Current_state.equals("request_received")){
-                        AcceptChatRequest();
-                    }*/
                     if(Current_state.equals("friends")){
                         RemoveSpecificContact();
                     }
@@ -219,85 +161,11 @@ public class ProfileActivity extends AppCompatActivity {
 
                                                 declinechatrequest.setVisibility(View.INVISIBLE);
                                                 declinechatrequest.setEnabled(false);
-                                            }/*{
-                                                chatrequestref.child(sender_user_id).child(receiveruserid)
-                                                        .removeValue()
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                if(task.isSuccessful()){
-                                                                    chatrequestref.child(receiveruserid).child(sender_user_id)
-                                                                            .removeValue()
-                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                                    sendmessagerequestbutton.setEnabled(true);
-                                                                                    Current_state = "friends";
-                                                                                    sendmessagerequestbutton.setText("Remove");
-
-                                                                                    declinechatrequest.setVisibility(View.INVISIBLE);
-                                                                                    declinechatrequest.setEnabled(false);
-                                                                                }
-                                                                            });
-                                                                }
-                                                            }
-                                                        });
-                                            }*/
+                                            }
                                         }
                                     });
                         }
                     }
                 });
     }
-
-    /*private void CancelChatRequest() {
-        chatrequestref.child(sender_user_id).child(receiveruserid)
-                .removeValue()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            chatrequestref.child(receiveruserid).child(sender_user_id)
-                                    .removeValue()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()){
-                                                sendmessagerequestbutton.setEnabled(true);
-                                                Current_state = "new";
-                                                sendmessagerequestbutton.setText("Send message");
-
-                                                declinechatrequest.setVisibility(View.INVISIBLE);
-                                                declinechatrequest.setEnabled(false);
-                                            }
-                                        }
-                                    });
-                        }
-                    }
-                });
-    }*/  //cancel chat request
-
-    /*private void sendchatrequest() {
-        chatrequestref.child(sender_user_id).child(receiveruserid)
-                .child("request_type").setValue("sent")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            chatrequestref.child(receiveruserid).child(sender_user_id)
-                                    .child("request_type").setValue("received")
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()){
-                                                sendmessagerequestbutton.setEnabled(true);
-                                                Current_state = "request_sent";
-                                                sendmessagerequestbutton.setText("Cancel Chat Request");
-                                            }
-                                        }
-                                    });
-                        }
-                    }
-                });
-    }*/ // send chat request
 }
